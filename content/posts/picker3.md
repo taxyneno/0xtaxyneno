@@ -1,7 +1,7 @@
 ---
 title: "PicoCTF: Picker III"
 summary: Exploiting global values!
-date: 2024-09-04
+date: 2024-09-08
 tags: ["picoctf"]
 categories: ["write-up", "reverse_engineering"]
 draft: false
