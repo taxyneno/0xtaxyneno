@@ -15,7 +15,7 @@ minify:
 params:
   env: production
   title: 0xTaxyneno
-  description: "Exploring RE and Binary Exploitation"
+  description: "Exploring Reverse Engineering and Binary Exploitation for fun and profit."
   keywords: [Blog, Portfolio, Reverse Engineering]
   author: David
   # images: ["<link or path of image for opengraph, twitter-cards>"]
