@@ -1,7 +1,7 @@
 ---
 title: "PicoCTF: Picker II"
 summary: "Navigating around a simple substring check."
-date: 2024-09-08
+date: 2024-09-07
 tags: ["picoctf"]
 categories: ["write-up", "reverse_engineering"]
 draft: false
