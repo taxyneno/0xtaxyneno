@@ -73,7 +73,7 @@ int add(int num1, int num2, int num3) {
 For our CTF challenge, we now know that the last function parameter is the first thing pushed onto the stack.
 
 *** Getting the 2nd Parameter
-For this code segment, we get the value 12 bytes above ebp, the 2nd paramter, and push it into eax.
+For this code segment, we get the value 12 bytes above ebp, the 2nd parameter, and push it into eax.
 
 Afterwards, we move the value from eax 4 bytes below ebp, making it easier to call in our stack frame.
 
