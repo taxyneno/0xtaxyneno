@@ -6,21 +6,28 @@
     <description>Recent content in Write-Up on 0xtaxyneno</description>
     <generator>Hugo -- 0.126.1</generator>
     <language>en</language>
-    <lastBuildDate>Sun, 08 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 09 Sep 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/write-up/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PicoCTF: ASM2</title>
+      <link>http://localhost:1313/posts/asm2/</link>
+      <pubDate>Mon, 09 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/asm2/</guid>
+      <description>Learning how function arguments are referenced in assembly. Fun!</description>
+    </item>
+    <item>
+      <title>PicoCTF: Format String 0</title>
+      <link>http://localhost:1313/posts/formatstring0/</link>
+      <pubDate>Mon, 09 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/formatstring0/</guid>
+      <description>Introduction to Buffer Overflows</description>
+    </item>
     <item>
       <title>PicoCTF: ASM1</title>
       <link>http://localhost:1313/posts/asm1/</link>
       <pubDate>Sun, 08 Sep 2024 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/posts/asm1/</guid>
       <description>Counting in assembly.</description>
-    </item>
-    <item>
-      <title>PicoCTF: ASM2</title>
-      <link>http://localhost:1313/posts/asm2/</link>
-      <pubDate>Sun, 08 Sep 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/posts/asm2/</guid>
-      <description>Difficult!</description>
     </item>
     <item>
       <title>PicoCTF: Picker I</title>

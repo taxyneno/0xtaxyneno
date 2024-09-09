@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>C on 0xtaxyneno</title>
+    <link>http://localhost:1313/tags/c/</link>
+    <description>Recent content in C on 0xtaxyneno</description>
+    <generator>Hugo -- 0.126.1</generator>
+    <language>en</language>
+    <lastBuildDate>Mon, 09 Sep 2024 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>PicoCTF: Format String 0</title>
+      <link>http://localhost:1313/posts/formatstring0/</link>
+      <pubDate>Mon, 09 Sep 2024 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/posts/formatstring0/</guid>
+      <description>Introduction to Buffer Overflows</description>
+    </item>
+  </channel>
+</rss>

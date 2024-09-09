@@ -60,7 +60,7 @@ The assembly code looked like x86, so I assumed it was using the =cdecl= [[https
 
 In cdecl, functions arguments are passed onto the stack from right to left.
 
-So in the example below, the assembly representation would first push `num3` onto the stack, then `num2`, and finally `num1`.
+So in the example below, the assembly representation would first push =num3= onto the stack, then =num2=, and finally =num1=.
 
 #+begin_src c
 
