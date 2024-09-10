@@ -1,0 +1,70 @@
+---
+title: "PicoCTF: Vuln"
+summary: "Very simple buffer overflow."
+date: 2024-09-10
+tags: ["picoctf", "c"]
+categories: ["write-up", "binary exploitation"]
+draft: false
+---
+
+* Problem Overview
+We are given a binary file and the source code. Let's look at the source code:
+
+#+begin_src c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <signal.h>
+
+#define FLAGSIZE_MAX 64
+
+char flag[FLAGSIZE_MAX];
+
+void sigsegv_handler(int sig) {
+  printf("%s\n", flag);
+  fflush(stdout);
+  exit(1);
+}
+
+void vuln(char *input){
+  char buf2[16];
+  strcpy(buf2, input);
+}
+
+int main(int argc, char **argv){
+
+  FILE *f = fopen("flag.txt","r");
+  if (f == NULL) {
+    printf("%s %s", "Please create 'flag.txt' in this directory with your",
+                    "own debugging flag.\n");
+    exit(0);
+  }
+
+  fgets(flag,FLAGSIZE_MAX,f);
+  signal(SIGSEGV, sigsegv_handler); // Set up signal handler
+
+  gid_t gid = getegid();
+  setresgid(gid, gid, gid);
+
+
+  printf("Input: ");
+  fflush(stdout);
+  char buf1[100];
+  gets(buf1);
+  vuln(buf1);
+  printf("The program will exit now\n");
+  return 0;
+}
+
+
+#+end_src
+Some quick notes:
+- Similar to FormatString0, we have a custom =sigsegv= function that will output the flag on a segmentation fault
+  - So, we just need to identify which buffer we can overflow
+- The code is super simple, and it looks =strcpy= does not check if input exceeds the buffer size
+
+* Overflowing the Buffer
+I am surprised this is labeled as a medium, we can simply just provide a large input to overflow the buffer to get the flag.
+
+After supplying large input, we get the flag:
+=picoCTF{ov3rfl0ws_ar3nt_that_bad_c5ca6248}=

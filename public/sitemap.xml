@@ -26,6 +26,9 @@
     <loc>http://localhost:1313/posts/formatstring0/</loc>
     <lastmod>2024-09-09T00:00:00+00:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/posts/vuln/</loc>
+    <lastmod>2024-09-09T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/posts/</loc>
     <lastmod>2024-09-09T00:00:00+00:00</lastmod>
   </url><url>

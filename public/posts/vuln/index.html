@@ -1,0 +1,94 @@
+<!doctype html><html lang=en dir=auto><head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>PicoCTF: Vuln | 0xtaxyneno</title>
+<meta name=keywords content="picoctf,c"><meta name=description content="Very simple buffer overflow."><meta name=author content="David"><link rel=canonical href=http://localhost:1313/posts/vuln/><link crossorigin=anonymous href=/assets/css/stylesheet.fc220c15db4aef0318bbf30adc45d33d4d7c88deff3238b23eb255afdc472ca6.css integrity="sha256-/CIMFdtK7wMYu/MK3EXTPU18iN7/MjiyPrJVr9xHLKY=" rel="preload stylesheet" as=style><link rel=icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=16x16 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=icon type=image/png sizes=32x32 href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=apple-touch-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><link rel=mask-icon href=http://localhost:1313/%3Clink%20/%20abs%20url%3E><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=http://localhost:1313/posts/vuln/><noscript><style>#theme-toggle,.top-link{display:none}</style></noscript><meta property="og:title" content="PicoCTF: Vuln"><meta property="og:description" content="Very simple buffer overflow."><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/posts/vuln/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-09-10T00:00:00+00:00"><meta property="article:modified_time" content="2024-09-10T00:00:00+00:00"><meta property="og:site_name" content="0xTaxyneno"><meta name=twitter:card content="summary"><meta name=twitter:title content="PicoCTF: Vuln"><meta name=twitter:description content="Very simple buffer overflow."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"http://localhost:1313/posts/"},{"@type":"ListItem","position":2,"name":"PicoCTF: Vuln","item":"http://localhost:1313/posts/vuln/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"PicoCTF: Vuln","name":"PicoCTF: Vuln","description":"Very simple buffer overflow.","keywords":["picoctf","c"],"articleBody":" Problem Overview We are given a binary file and the source code. Let's look at the source code:\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 #include #include #include #include #define FLAGSIZE_MAX 64 char flag[FLAGSIZE_MAX]; void sigsegv_handler(int sig) { printf(\"%s\\n\", flag); fflush(stdout); exit(1); } void vuln(char *input){ char buf2[16]; strcpy(buf2, input); } int main(int argc, char **argv){ FILE *f = fopen(\"flag.txt\",\"r\"); if (f == NULL) { printf(\"%s %s\", \"Please create 'flag.txt' in this directory with your\", \"own debugging flag.\\n\"); exit(0); } fgets(flag,FLAGSIZE_MAX,f); signal(SIGSEGV, sigsegv_handler); // Set up signal handler gid_t gid = getegid(); setresgid(gid, gid, gid); printf(\"Input: \"); fflush(stdout); char buf1[100]; gets(buf1); vuln(buf1); printf(\"The program will exit now\\n\"); return 0; } Some quick notes:\nSimilar to FormatString0, we have a custom sigsegv function that will output the flag on a segmentation fault\nSo, we just need to identify which buffer we can overflow The code is super simple, and it looks strcpy does not check if input exceeds the buffer size Overflowing the Buffer I am surprised this is labeled as a medium, we can simply just provide a large input to overflow the buffer to get the flag.\nAfter supplying large input, we get the flag: picoCTF{ov3rfl0ws_ar3nt_that_bad_c5ca6248}\n","wordCount":"238","inLanguage":"en","datePublished":"2024-09-10T00:00:00Z","dateModified":"2024-09-10T00:00:00Z","author":{"@type":"Person","name":"David"},"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:1313/posts/vuln/"},"publisher":{"@type":"Organization","name":"0xtaxyneno","logo":{"@type":"ImageObject","url":"http://localhost:1313/%3Clink%20/%20abs%20url%3E"}}}</script></head><body class=dark id=top><script>localStorage.getItem("pref-theme")==="light"&&document.body.classList.remove("dark")</script><header class=header><nav class=nav><div class=logo><a href=http://localhost:1313/ accesskey=h title="0xTaxyneno (Alt + H)"><img src=http://localhost:1313/apple-touch-icon.png alt aria-label=logo height=35>0xTaxyneno</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=http://localhost:1313/categories/ title=categories><span>categories</span></a></li><li><a href=http://localhost:1313/tags/ title=tags><span>tags</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=http://localhost:1313/>Home</a>&nbsp;»&nbsp;<a href=http://localhost:1313/posts/>Posts</a></div><h1 class="post-title entry-hint-parent">PicoCTF: Vuln</h1><div class=post-meta><span title='2024-09-10 00:00:00 +0000 UTC'>September 10, 2024</span>&nbsp;·&nbsp;2 min&nbsp;·&nbsp;David</div></header><div class=post-content><div id=outline-container-headline-1 class=outline-2><h2 id=headline-1>Problem Overview</h2><div id=outline-text-headline-1 class=outline-text-2><p>We are given a binary file and the source code. Let's look at the source code:</p><div class="src src-c"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-c data-lang=c><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdio.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;stdlib.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;string.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;signal.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=cp>#define FLAGSIZE_MAX 64
+</span></span></span><span class=line><span class=cl><span class=cp></span>
+</span></span><span class=line><span class=cl><span class=kt>char</span> <span class=n>flag</span><span class=p>[</span><span class=n>FLAGSIZE_MAX</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>sigsegv_handler</span><span class=p>(</span><span class=kt>int</span> <span class=n>sig</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>  <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%s</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>,</span> <span class=n>flag</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>fflush</span><span class=p>(</span><span class=n>stdout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>exit</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>void</span> <span class=nf>vuln</span><span class=p>(</span><span class=kt>char</span> <span class=o>*</span><span class=n>input</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=n>buf2</span><span class=p>[</span><span class=mi>16</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>  <span class=nf>strcpy</span><span class=p>(</span><span class=n>buf2</span><span class=p>,</span> <span class=n>input</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>(</span><span class=kt>int</span> <span class=n>argc</span><span class=p>,</span> <span class=kt>char</span> <span class=o>**</span><span class=n>argv</span><span class=p>){</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=n>FILE</span> <span class=o>*</span><span class=n>f</span> <span class=o>=</span> <span class=nf>fopen</span><span class=p>(</span><span class=s>&#34;flag.txt&#34;</span><span class=p>,</span><span class=s>&#34;r&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>if</span> <span class=p>(</span><span class=n>f</span> <span class=o>==</span> <span class=nb>NULL</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;%s %s&#34;</span><span class=p>,</span> <span class=s>&#34;Please create &#39;flag.txt&#39; in this directory with your&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s>&#34;own debugging flag.</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=nf>exit</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>fgets</span><span class=p>(</span><span class=n>flag</span><span class=p>,</span><span class=n>FLAGSIZE_MAX</span><span class=p>,</span><span class=n>f</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>signal</span><span class=p>(</span><span class=n>SIGSEGV</span><span class=p>,</span> <span class=n>sigsegv_handler</span><span class=p>);</span> <span class=c1>// Set up signal handler
+</span></span></span><span class=line><span class=cl><span class=c1></span>
+</span></span><span class=line><span class=cl>  <span class=kt>gid_t</span> <span class=n>gid</span> <span class=o>=</span> <span class=nf>getegid</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>  <span class=nf>setresgid</span><span class=p>(</span><span class=n>gid</span><span class=p>,</span> <span class=n>gid</span><span class=p>,</span> <span class=n>gid</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>  <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;Input: &#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>fflush</span><span class=p>(</span><span class=n>stdout</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=kt>char</span> <span class=n>buf1</span><span class=p>[</span><span class=mi>100</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>  <span class=nf>gets</span><span class=p>(</span><span class=n>buf1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>vuln</span><span class=p>(</span><span class=n>buf1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=nf>printf</span><span class=p>(</span><span class=s>&#34;The program will exit now</span><span class=se>\n</span><span class=s>&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span></span></span></code></pre></td></tr></table></div></div></div><p>Some quick notes:</p><ul><li><p>Similar to FormatString0, we have a custom <code class=verbatim>sigsegv</code> function that will output the flag on a segmentation fault</p><ul><li>So, we just need to identify which buffer we can overflow</li></ul></li><li>The code is super simple, and it looks <code class=verbatim>strcpy</code> does not check if input exceeds the buffer size</li></ul></div></div><div id=outline-container-headline-2 class=outline-2><h2 id=headline-2>Overflowing the Buffer</h2><div id=outline-text-headline-2 class=outline-text-2><p>I am surprised this is labeled as a medium, we can simply just provide a large input to overflow the buffer to get the flag.</p><p>After supplying large input, we get the flag:
+<code class=verbatim>picoCTF{ov3rfl0ws_ar3nt_that_bad_c5ca6248}</code></p></div></div></div><footer class=post-footer><ul class=post-tags><li><a href=http://localhost:1313/tags/picoctf/>Picoctf</a></li><li><a href=http://localhost:1313/tags/c/>C</a></li></ul><nav class=paginav><a class=next href=http://localhost:1313/posts/asm2/><span class=title>Next »</span><br><span>PicoCTF: ASM2</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2024 <a href=http://localhost:1313/>0xtaxyneno</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script></body></html>
